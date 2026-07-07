@@ -1,0 +1,511 @@
+/* ============================================================
+   Spoke — single global stylesheet.
+   Plain CSS, organized top-down: base → layout → components.
+   ============================================================ */
+
+/* ---------- Base ---------- */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #f4f6f8;
+  color: #1f2933;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+}
+
+/* ---------- Reusable pieces ---------- */
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-leave {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-leave:hover {
+  background: #fecaca;
+}
+
+/* Destructive action — outlined so it stands apart from "Leave" */
+.btn-delete {
+  background: #fff;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.btn-delete:hover {
+  background: #fee2e2;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #52606d;
+}
+
+.btn-ghost:hover {
+  background: #e4e7eb;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #cbd2d9;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.error-text {
+  color: #b91c1c;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.error-banner {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* ---------- Login screen ---------- */
+
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(31, 41, 51, 0.08);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.login-logo {
+  font-size: 2rem;
+  justify-content: center;
+}
+
+.login-tagline {
+  color: #52606d;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-switch {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #52606d;
+}
+
+/* A button that looks like a link — used to flip between login and sign up */
+.link-button {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.login-card .btn-ghost {
+  margin-top: 1rem;
+}
+
+/* ---------- App header ---------- */
+
+.app-header {
+  background: #fff;
+  border-bottom: 1px solid #e4e7eb;
+  padding: 0.75rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 20; /* stay above the cards while scrolling */
+}
+
+/* Logo on the left, navigation on the right — plain flexbox */
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+/* The header logo is a button (click = back to the feed) but shouldn't look like one */
+.logo-button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.header-desktop {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ---------- Header navigation (All rides / My rides) ---------- */
+
+.nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.nav-link {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #52606d;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background: #e4e7eb;
+}
+
+.nav-link.active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* ---------- Mobile navigation (hamburger) ---------- */
+
+/* Hidden on desktop; the media query below turns them on */
+.hamburger {
+  display: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #3e4c59;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.hamburger:hover {
+  background: #e4e7eb;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .header-desktop {
+    display: none; /* desktop links disappear... */
+  }
+
+  .hamburger {
+    display: block; /* ...and the hamburger takes over */
+  }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e4e7eb;
+  }
+
+  .mobile-link {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #52606d;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 0.75rem;
+    cursor: pointer;
+  }
+
+  .mobile-link:hover {
+    background: #e4e7eb;
+  }
+
+  .mobile-link.active {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .mobile-menu-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    padding: 0.75rem 0.75rem 0.25rem;
+    border-top: 1px solid #f0f2f5;
+  }
+}
+
+.greeting {
+  color: #52606d;
+  font-size: 0.95rem;
+}
+
+/* ---------- Main feed layout ---------- */
+
+.app-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.feed-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.empty-feed {
+  text-align: center;
+  color: #52606d;
+  padding: 3rem 1rem;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px dashed #cbd2d9;
+}
+
+/* ---------- Feed filters ---------- */
+
+.filter-bar {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(31, 41, 51, 0.06);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: flex-end; /* bottom-aligns the Clear button with the inputs */
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- My Rides dashboard ---------- */
+
+.page-title {
+  margin-bottom: 1.25rem;
+}
+
+.myrides-section {
+  margin-bottom: 2rem;
+}
+
+/* ---------- Create ride form ---------- */
+
+.create-form {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(31, 41, 51, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.field {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3e4c59;
+}
+
+/* ---------- Ride card ---------- */
+
+.ride-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ride-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(31, 41, 51, 0.06);
+  padding: 1.25rem 1.5rem;
+}
+
+.ride-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ride-route {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.type-icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.route-text {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.route-arrow {
+  color: #9aa5b1;
+  margin: 0 0.15rem;
+}
+
+.ride-date {
+  color: #52606d;
+  font-size: 0.9rem;
+  margin-top: 0.15rem;
+}
+
+/* ---------- Badges (visual cues for type and pace) ---------- */
+
+.badges {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.badge {
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ride types */
+.badge-road   { background: #dbeafe; color: #1d4ed8; }
+.badge-mtb    { background: #ffedd5; color: #c2410c; }
+.badge-gravel { background: #fef3c7; color: #a16207; }
+.badge-city   { background: #ccfbf1; color: #0f766e; }
+
+/* pace levels */
+.badge-beginner     { background: #dcfce7; color: #15803d; }
+.badge-intermediate { background: #fef9c3; color: #a16207; }
+.badge-advanced     { background: #fee2e2; color: #b91c1c; }
+
+/* ---------- Participants row ---------- */
+
+.ride-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f2f5;
+  flex-wrap: wrap;
+}
+
+.participants {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.participants-count {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.participants-names {
+  color: #52606d;
+  font-size: 0.85rem;
+}
+
+/* Delete (creator only) + Join/Leave sit together */
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
