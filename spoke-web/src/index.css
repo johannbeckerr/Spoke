@@ -33,9 +33,11 @@ h2 {
   border: none;
   border-radius: 8px;
   padding: 0.55rem 1.1rem;
+  min-height: 44px; /* comfortable touch target on phones */
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
+  touch-action: manipulation; /* no double-tap zoom delay on touch screens */
   transition: background 0.15s ease, transform 0.05s ease;
 }
 
@@ -88,9 +90,10 @@ h2 {
 .input {
   width: 100%;
   padding: 0.55rem 0.75rem;
+  min-height: 44px; /* comfortable touch target on phones */
   border: 1px solid #cbd2d9;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px minimum — anything smaller makes iOS zoom in on focus */
   background: #fff;
 }
 
@@ -118,6 +121,7 @@ h2 {
 
 .login-screen {
   min-height: 100vh;
+  min-height: 100dvh; /* mobile browsers: track the collapsing URL bar */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,7 +168,7 @@ h2 {
   font-size: inherit;
   font-weight: 600;
   cursor: pointer;
-  padding: 0;
+  padding: 0.5rem 0.25rem; /* enlarges the tap area on phones */
 }
 
 .link-button:hover {
@@ -250,6 +254,8 @@ h2 {
 /* Hidden on desktop; the media query below turns them on */
 .hamburger {
   display: none;
+  min-width: 44px; /* comfortable touch target */
+  min-height: 44px;
   font-size: 1.4rem;
   line-height: 1;
   color: #3e4c59;
@@ -321,6 +327,7 @@ h2 {
 .greeting {
   color: #52606d;
   font-size: 0.95rem;
+  overflow-wrap: anywhere; /* a long user name must not push the layout wider */
 }
 
 /* ---------- Main feed layout ---------- */
@@ -335,6 +342,8 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap; /* on narrow screens the button drops below the title */
   margin-bottom: 1.25rem;
 }
 
@@ -435,6 +444,7 @@ h2 {
 .route-text {
   font-weight: 700;
   font-size: 1.05rem;
+  overflow-wrap: anywhere; /* break long place names instead of overflowing the card */
 }
 
 .route-arrow {
@@ -502,10 +512,42 @@ h2 {
 .participants-names {
   color: #52606d;
   font-size: 0.85rem;
+  overflow-wrap: anywhere; /* long name lists wrap instead of overflowing the card */
 }
 
 /* Delete (creator only) + Join/Leave sit together */
 .card-actions {
   display: flex;
   gap: 0.5rem;
+}
+
+/* ---------- Small phones ---------- */
+
+@media (max-width: 480px) {
+  /* Create-ride fields stack — side by side is too cramped for date pickers */
+  .form-row {
+    flex-direction: column;
+  }
+
+  /* Card buttons stretch across the card — easy to hit with a thumb */
+  .card-actions {
+    width: 100%;
+  }
+
+  .card-actions .btn {
+    flex: 1;
+  }
+
+  /* Slightly tighter padding so the content keeps room to breathe */
+  .ride-card {
+    padding: 1rem;
+  }
+
+  .create-form {
+    padding: 1.25rem 1rem;
+  }
+
+  .login-card {
+    padding: 2rem 1.25rem;
+  }
 }
