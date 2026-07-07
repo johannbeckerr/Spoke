@@ -8,27 +8,27 @@ CLAUDE.md
 # =========================
 # FRONTEND (React)
 # =========================
-frontend/node_modules/
-frontend/dist/
-frontend/dist-ssr/
-frontend/*.local
-frontend/.env
-frontend/.env.*
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
+spoke-web/node_modules/
+spoke-web/dist/
+spoke-web/dist-ssr/
+spoke-web/*.local
+spoke-web/.env
+spoke-web/.env.*
+spoke-web/npm-debug.log*
+spoke-web/yarn-debug.log*
+spoke-web/yarn-error.log*
 
 # =========================
 # BACKEND (Java/Spring Boot)
 # =========================
-backend/target/
-backend/HELP.md
-backend/.mvn/wrapper/maven-wrapper.jar
-backend/.idea/
-backend/.vscode/
-backend/*.iml
-backend/*.iws
-backend/*.ipr
-backend/.settings/
-backend/.classpath
-backend/.project
+spoke-api/target/
+spoke-api/HELP.md
+spoke-api/.mvn/wrapper/maven-wrapper.jar
+spoke-api/.idea/
+spoke-api/.vscode/
+spoke-api/*.iml
+spoke-api/*.iws
+spoke-api/*.ipr
+spoke-api/.settings/
+spoke-api/.classpath
+spoke-api/.project
