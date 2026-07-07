@@ -1,7 +1,8 @@
 // All communication with the Spring Boot backend lives in this one file.
 // Components import these functions and never build URLs themselves.
 
-const BASE_URL = 'http://localhost:8080/api';
+const API_DOMAIN = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const BASE_URL = `${API_DOMAIN}/api`;
 
 // Small helper: run a fetch, throw a readable error if the server says no,
 // otherwise return the parsed JSON.
