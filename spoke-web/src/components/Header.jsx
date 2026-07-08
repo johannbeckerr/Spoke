@@ -130,7 +130,7 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
                 Support the Project
               </button>
               <button className="btn btn-primary btn-full" onClick={() => go('auth')}>
-                Log in
+                Login
               </button>
             </>
           )}
