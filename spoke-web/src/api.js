@@ -15,7 +15,9 @@ async function request(path, options = {}) {
   if (!response.ok) {
     // Spring puts a human-readable "message" in the error JSON — use it if present
     const body = await response.json().catch(() => null);
-    throw new Error(body?.message || `Request failed: ${response.status} ${response.statusText}`);
+    const error = new Error(body?.message || `Request failed: ${response.status} ${response.statusText}`);
+    error.status = response.status;
+    throw error;
   }
   // 204 No Content (e.g. after a delete) has no body to parse
   if (response.status === 204) {
@@ -67,4 +69,13 @@ export function leaveRide(rideId, userId) {
 // this when userId is the ride's creator
 export function deleteRide(rideId, userId) {
   return request(`/rides/${rideId}?userId=${userId}`, { method: 'DELETE' });
+}
+
+// POST /api/feedback — a logged-in user submits a suggestion/complaint.
+// The backend returns 401 if userId is missing or unknown.
+export function sendFeedback(userId, message) {
+  return request('/feedback', {
+    method: 'POST',
+    body: JSON.stringify({ userId, message }),
+  });
 }

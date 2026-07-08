@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import { SpokeLogoIcon } from './icons.jsx';
+
+// A friendly stand-in for the raw "Request failed: 401 Unauthorized" the API throws
+const LOGIN_FAILED_MESSAGE =
+  "We couldn't find an account with those details. Please check your email and password and try again.";
 
 // One screen, two modes: "login" for existing users, "signup" for new ones.
-// The link at the bottom switches between them.
+// The button at the bottom switches between them.
 function AuthScreen({ onLogin, onRegister, onBack }) {
   const [mode, setMode] = useState('login');
   const [name, setName] = useState('');
@@ -28,19 +33,16 @@ function AuthScreen({ onLogin, onRegister, onBack }) {
       }
       // Success — App switches back to the feed, nothing left to do here
     } catch (err) {
-      setError(err.message);
+      setError(err.status === 401 ? LOGIN_FAILED_MESSAGE : err.message);
     }
   }
 
   return (
     <div className="login-screen">
       <div className="login-card">
-        <div className="logo login-logo">
-          <span className="logo-icon">🚴</span> Spoke
+        <div className="login-logo-mark">
+          Sp<SpokeLogoIcon className="login-logo-icon" />ke
         </div>
-        <p className="login-tagline">
-          {isLogin ? 'Welcome back!' : 'Create your account.'}
-        </p>
 
         <form onSubmit={handleSubmit}>
           {/* The name field only exists when signing up */}
@@ -82,12 +84,9 @@ function AuthScreen({ onLogin, onRegister, onBack }) {
 
         {error && <p className="error-text">{error}</p>}
 
-        <p className="auth-switch">
-          {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-          <button className="link-button" onClick={switchMode}>
-            {isLogin ? 'Sign up' : 'Log in'}
-          </button>
-        </p>
+        <button className="btn btn-outline btn-full" onClick={switchMode}>
+          {isLogin ? 'Sign up' : 'Log in'}
+        </button>
 
         <button className="btn btn-ghost btn-full" onClick={onBack}>
           ← Back to rides

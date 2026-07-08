@@ -40,6 +40,13 @@ public class Ride {
     @Column(nullable = false)
     private String pace;
 
+    // Coordinates of the start and end points, captured from the location
+    // autocomplete. Nullable — older rides and hand-typed locations have none.
+    private Double origin_lat;
+    private Double origin_lon;
+    private Double destination_lat;
+    private Double destination_lon;
+
     // The user who created the ride
     @ManyToOne
     @JoinColumn(name = "creator_id")
@@ -101,6 +108,38 @@ public class Ride {
 
     public void setPace(String pace) {
         this.pace = pace;
+    }
+
+    public Double getOrigin_lat() {
+        return origin_lat;
+    }
+
+    public void setOrigin_lat(Double origin_lat) {
+        this.origin_lat = origin_lat;
+    }
+
+    public Double getOrigin_lon() {
+        return origin_lon;
+    }
+
+    public void setOrigin_lon(Double origin_lon) {
+        this.origin_lon = origin_lon;
+    }
+
+    public Double getDestination_lat() {
+        return destination_lat;
+    }
+
+    public void setDestination_lat(Double destination_lat) {
+        this.destination_lat = destination_lat;
+    }
+
+    public Double getDestination_lon() {
+        return destination_lon;
+    }
+
+    public void setDestination_lon(Double destination_lon) {
+        this.destination_lon = destination_lon;
     }
 
     public User getCreator() {

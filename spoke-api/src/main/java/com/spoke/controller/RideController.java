@@ -51,6 +51,10 @@ public class RideController {
         ride.setDateTime(LocalDateTime.parse(request.dateTime));
         ride.setRideType(request.rideType);
         ride.setPace(request.pace);
+        ride.setOrigin_lat(request.origin_lat);
+        ride.setOrigin_lon(request.origin_lon);
+        ride.setDestination_lat(request.destination_lat);
+        ride.setDestination_lon(request.destination_lon);
         ride.setCreator(creator);
         ride.getParticipants().add(creator);
 
@@ -115,5 +119,10 @@ public class RideController {
         public String rideType;
         public String pace;
         public Long creatorId;
+        // Optional — present only when the location was picked from the autocomplete
+        public Double origin_lat;
+        public Double origin_lon;
+        public Double destination_lat;
+        public Double destination_lon;
     }
 }

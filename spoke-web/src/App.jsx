@@ -3,10 +3,12 @@ import * as api from './api.js';
 import { EMPTY_FILTERS } from './constants.js';
 import AuthScreen from './components/AuthScreen.jsx';
 import CreateRideForm from './components/CreateRideForm.jsx';
+import FeedbackSection from './components/FeedbackSection.jsx';
 import FilterBar from './components/FilterBar.jsx';
 import Header from './components/Header.jsx';
 import MyRides from './components/MyRides.jsx';
 import RideFeed from './components/RideFeed.jsx';
+import WelcomeModal from './components/WelcomeModal.jsx';
 
 // The root component owns all the shared state:
 // - who is logged in (null = browsing anonymously)
@@ -26,6 +28,8 @@ function App() {
   const [screen, setScreen] = useState('feed');
   const [showForm, setShowForm] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
+  // Shown once per login, when the user lands on the dashboard
+  const [showWelcome, setShowWelcome] = useState(false);
 
   // Load the ride feed right away — no login needed to look around
   useEffect(() => {
@@ -47,7 +51,8 @@ function App() {
   function saveUser(loggedInUser) {
     localStorage.setItem('spokeUser.v2', JSON.stringify(loggedInUser));
     setUser(loggedInUser);
-    setScreen('feed'); // back to the feed
+    setScreen('feed'); // back to the feed (the dashboard)
+    setShowWelcome(true); // greet the user every time they log in
   }
 
   async function handleLogin(email, password) {
@@ -118,15 +123,20 @@ function App() {
 
   // 'myrides' is protected — without a user we fall back to the feed
   const onMyRides = screen === 'myrides' && user != null;
+  const onFeedback = screen === 'feedback';
 
   return (
     <div className="app">
+      {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
+
       <Header user={user} onMyRides={onMyRides} onNavigate={setScreen} onLogout={handleLogout} />
 
       <main className="app-main">
         {error && <p className="error-banner">{error}</p>}
 
-        {onMyRides ? (
+        {onFeedback ? (
+          <FeedbackSection user={user} onLoginRedirect={() => setScreen('auth')} />
+        ) : onMyRides ? (
           <MyRides
             rides={rides}
             currentUser={user}

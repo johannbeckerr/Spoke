@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { SpokeLogoIcon } from './icons.jsx';
+import SupportModal from './SupportModal.jsx';
 
 // The top bar, responsive without any UI library:
 // - desktop (> 640px): logo left, nav links + user info right (plain flexbox)
@@ -7,11 +9,18 @@ import { useState } from 'react';
 // whether the mobile menu is open.
 function Header({ user, onMyRides, onNavigate, onLogout }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
 
   // Navigating anywhere closes the mobile menu
   function go(screen) {
     setIsMenuOpen(false);
     onNavigate(screen);
+  }
+
+  // The support link opens a modal (not a screen), so close the menu first
+  function openSupport() {
+    setIsMenuOpen(false);
+    setShowSupport(true);
   }
 
   function handleLogoutClick() {
@@ -22,8 +31,8 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
   return (
     <header className="app-header">
       <div className="header-row">
-        <button className="logo logo-button" onClick={() => go('feed')}>
-          <span className="logo-icon">🚴</span> Spoke
+        <button className="brand-logo" onClick={() => go('feed')}>
+          Sp<SpokeLogoIcon className="brand-logo-icon" />ke
         </button>
 
         {/* Desktop navigation — hidden on small screens by CSS */}
@@ -43,6 +52,12 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
                 >
                   My rides
                 </button>
+                <button className="nav-link" onClick={() => go('feedback')}>
+                  Feedback
+                </button>
+                <button className="nav-link" onClick={openSupport}>
+                  Support the Project
+                </button>
               </nav>
               <span className="greeting">Hi, {user.name}</span>
               <button className="btn btn-ghost" onClick={handleLogoutClick}>
@@ -50,9 +65,19 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
               </button>
             </>
           ) : (
-            <button className="btn btn-primary" onClick={() => go('auth')}>
-              Log in
-            </button>
+            <>
+              <nav className="nav">
+                <button className="nav-link" onClick={() => go('feedback')}>
+                  Feedback
+                </button>
+                <button className="nav-link" onClick={openSupport}>
+                  Support the Project
+                </button>
+              </nav>
+              <button className="btn btn-primary" onClick={() => go('auth')}>
+                Log in
+              </button>
+            </>
           )}
         </div>
 
@@ -83,6 +108,12 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
               >
                 My rides
               </button>
+              <button className="mobile-link" onClick={() => go('feedback')}>
+                Feedback
+              </button>
+              <button className="mobile-link support-cta" onClick={openSupport}>
+                Support the Project
+              </button>
               <div className="mobile-menu-footer">
                 <span className="greeting">Hi, {user.name}</span>
                 <button className="btn btn-ghost" onClick={handleLogoutClick}>
@@ -91,12 +122,22 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
               </div>
             </>
           ) : (
-            <button className="btn btn-primary btn-full" onClick={() => go('auth')}>
-              Log in
-            </button>
+            <>
+              <button className="mobile-link" onClick={() => go('feedback')}>
+                Feedback
+              </button>
+              <button className="mobile-link support-cta" onClick={openSupport}>
+                Support the Project
+              </button>
+              <button className="btn btn-primary btn-full" onClick={() => go('auth')}>
+                Log in
+              </button>
+            </>
           )}
         </nav>
       )}
+
+      {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
     </header>
   );
 }
