@@ -27,8 +27,10 @@ public class User {
 
     // BCrypt hash of the password — never the plain text.
     // @JsonIgnore makes sure it is never sent to the browser either.
+    // Null for accounts created through Google sign-in: those users have
+    // no password here, and can only log in through Google.
     @JsonIgnore
-    @Column(nullable = false)
+    @Column
     private String password;
 
     // JPA needs an empty constructor to build objects from database rows

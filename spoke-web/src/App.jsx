@@ -71,6 +71,12 @@ function App() {
     saveUser(await api.register(name, email, password));
   }
 
+  // credential is the JWT Google gave the browser; the backend verifies it
+  // and returns the same { id, name, email } shape as a password login.
+  async function handleGoogleLogin(credential) {
+    saveUser(await api.googleLogin(credential));
+  }
+
   function handleLogout() {
     localStorage.removeItem('spokeUser.v2');
     setUser(null);
@@ -130,6 +136,7 @@ function App() {
         <AuthScreen
           onLogin={handleLogin}
           onRegister={handleRegister}
+          onGoogleLogin={handleGoogleLogin}
           onBack={() => setScreen('feed')}
         />
       </>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { GoogleLogin } from '@react-oauth/google';
 import { SpokeLogoIcon } from './icons.jsx';
 
 // A friendly stand-in for the raw "Request failed: 401 Unauthorized" the API throws
@@ -7,7 +8,7 @@ const LOGIN_FAILED_MESSAGE =
 
 // One screen, two modes: "login" for existing users, "signup" for new ones.
 // The button at the bottom switches between them.
-function AuthScreen({ onLogin, onRegister, onBack }) {
+function AuthScreen({ onLogin, onRegister, onGoogleLogin, onBack }) {
   const [mode, setMode] = useState('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,6 +20,16 @@ function AuthScreen({ onLogin, onRegister, onBack }) {
   function switchMode() {
     setMode(isLogin ? 'signup' : 'login');
     setError('');
+  }
+
+  // Google's button gives us a JWT ("credential"); the backend verifies it.
+  async function handleGoogleSuccess(credentialResponse) {
+    setError('');
+    try {
+      await onGoogleLogin(credentialResponse.credential);
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   async function handleSubmit(event) {
@@ -81,6 +92,15 @@ function AuthScreen({ onLogin, onRegister, onBack }) {
             {isLogin ? 'Log in' : 'Sign up'}
           </button>
         </form>
+
+        {/* Same button for logging in and signing up: the backend creates
+            the account the first time it sees a new Google email. */}
+        <div className="google-login">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-in failed. Please try again.')}
+          />
+        </div>
 
         {error && <p className="error-text">{error}</p>}
 

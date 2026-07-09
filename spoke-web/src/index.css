@@ -311,6 +311,13 @@ h2 {
   gap: 0.75rem;
 }
 
+/* Google renders its own fixed-width button, so just centre it */
+.google-login {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 /* Ghost button with a visible border — used for the Sign up / Log in toggle */
 .btn-outline {
   background: transparent;

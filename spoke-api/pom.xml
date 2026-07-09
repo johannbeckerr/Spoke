@@ -54,6 +54,13 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
+
+        <!-- Verifies the signature of the JWT that Google sends to the browser -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>2.7.0</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -42,6 +42,16 @@ export function login(email, password) {
   });
 }
 
+// POST /api/users/google — swaps the JWT from Google's button for our own
+// user object. Creates the account on first sign-in. Fails with 401 if the
+// token is not a genuine, unexpired token issued for this app.
+export function googleLogin(credential) {
+  return request('/users/google', {
+    method: 'POST',
+    body: JSON.stringify({ credential }),
+  });
+}
+
 // GET /api/rides — returns the full list of rides
 export function getRides() {
   return request('/rides');
