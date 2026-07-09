@@ -29,7 +29,16 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   // Shown once per login, when the user lands on the dashboard
-  const [showWelcome, setShowWelcome] = useState(false);
+  // Show the alpha notice once per browser-tab session (sessionStorage clears
+  // when the tab closes, so it reappears in a new tab but not on every refresh).
+  const [showWelcome, setShowWelcome] = useState(
+    () => sessionStorage.getItem('spokeWelcomeSeen') !== 'true'
+  );
+
+  function dismissWelcome() {
+    sessionStorage.setItem('spokeWelcomeSeen', 'true');
+    setShowWelcome(false);
+  }
 
   // Load the ride feed right away — no login needed to look around
   useEffect(() => {
@@ -52,7 +61,6 @@ function App() {
     localStorage.setItem('spokeUser.v2', JSON.stringify(loggedInUser));
     setUser(loggedInUser);
     setScreen('feed'); // back to the feed (the dashboard)
-    setShowWelcome(true); // greet the user every time they log in
   }
 
   async function handleLogin(email, password) {
@@ -111,13 +119,20 @@ function App() {
     setRides((current) => current.filter((ride) => ride.id !== rideId));
   }
 
+  // Rendered on every screen (including the auth screen below), so the alpha
+  // notice shows whenever the app opens, regardless of login state.
+  const welcomeModal = showWelcome ? <WelcomeModal onClose={dismissWelcome} /> : null;
+
   if (screen === 'auth') {
     return (
-      <AuthScreen
-        onLogin={handleLogin}
-        onRegister={handleRegister}
-        onBack={() => setScreen('feed')}
-      />
+      <>
+        {welcomeModal}
+        <AuthScreen
+          onLogin={handleLogin}
+          onRegister={handleRegister}
+          onBack={() => setScreen('feed')}
+        />
+      </>
     );
   }
 
@@ -127,7 +142,7 @@ function App() {
 
   return (
     <div className="app">
-      {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
+      {welcomeModal}
 
       <Header user={user} onMyRides={onMyRides} onNavigate={setScreen} onLogout={handleLogout} />
 
