@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="./assets/logo.svg" alt="Spoke Logo" width="120" height="120" />
   <h1>Spoke | Cycling Route Manager</h1>
   <p><em>A no-nonsense, brutalist web application for managing cycling routes and group rides.</em></p>
   
