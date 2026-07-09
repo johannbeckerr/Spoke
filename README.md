@@ -1,8 +1,9 @@
 <div align="center">
+  <img src="./assets/logo.svg" alt="Spoke Logo" width="120" height="120" />
   <h1>Spoke | Cycling Route Manager</h1>
   <p><em>A no-nonsense, brutalist web application for managing cycling routes and group rides.</em></p>
   
-  <h3><strong><a href="https://spoke-bike.vercel.app" target="_blank">🚀 View Live App Here</a></strong></h3>
+  <h3><strong><a href="[https://spoke-bike.vercel.app](https://spoke-bike.vercel.app)" target="_blank">🚀 View Live App Here</a></strong></h3>
 </div>
 
 <div align="center">
@@ -36,10 +37,20 @@ Instead of just writing features, I focused on product architecture and UX:
 ## 🛠️ Run Locally
 ```bash
 # Clone the repo
-git clone [https://github.com/yourusername/spoke.git](https://github.com/yourusername/spoke.git)
+git clone https://github.com/yourusername/spoke.git
 
 # 1. Run Backend (from /backend)
 mvn spring-boot:run
 
 # 2. Run Frontend (from /frontend)
 npm install && npm start
+```
+
+## 🛣️ Roadmap
+- [ ] Migrate to a cross-platform mobile app (iOS/Android) using **Capacitor**.
+- [ ] Integrate Mapbox API for true route distance calculation.
+- [ ] Allow users to join/leave rides dynamically in real-time.
+
+---
+*Developed by www.linkedin.com/in/johann-beckerr*  
+*🎓 I am currently a student actively seeking **Junior**, **Entry-Level**, or **Internship** Software Developer opportunities. Let's connect!*
