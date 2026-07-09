@@ -1,9 +1,8 @@
 <div align="center">
-  <img src="./assets/logo.svg" alt="Spoke Logo" width="120" height="120" />
   <h1>Spoke | Cycling Route Manager</h1>
   <p><em>A no-nonsense, brutalist web application for managing cycling routes and group rides.</em></p>
   
-  <h3><strong><a href="[https://spoke-bike.vercel.app](https://spoke-bike.vercel.app)" target="_blank">🚀 View Live App Here</a></strong></h3>
+  <h3><strong><a href="https://spoke-bike.vercel.app" target="_blank">🚀 View Live App Here</a></strong></h3>
 </div>
 
 <div align="center">
