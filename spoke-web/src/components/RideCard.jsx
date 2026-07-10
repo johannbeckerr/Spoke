@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { RoadIcon, MtbIcon, GravelIcon, CityIcon, BikeIcon, UsersIcon, ChevronIcon } from './icons.jsx';
+import RiderList from './RiderList.jsx';
 
 // Small line-art cue per ride type so cards are scannable at a glance
 const TYPE_ICONS = {
@@ -28,7 +29,7 @@ function formatDateTime(isoString) {
   return `${day} · ${time}`;
 }
 
-function RideCard({ ride, currentUser, onJoin, onLeave, onDelete }) {
+function RideCard({ ride, currentUser, onJoin, onLeave, onDelete, onRiderClick }) {
   // Collapsed by default — the card only expands when the rider asks for more.
   const [showDetails, setShowDetails] = useState(false);
 
@@ -107,12 +108,16 @@ function RideCard({ ride, currentUser, onJoin, onLeave, onDelete }) {
         <ChevronIcon
           style={{
             transform: showDetails ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.2s ease',
+            transition: 'transform 0.15s linear', // rigid, like every motion here
           }}
         />
       </button>
 
-      {showDetails && (
+      {/* The details drawer stays mounted so its height can snap open and
+          shut (a conditional render can't animate). CSS drives the motion;
+          the .open class is the only state. */}
+      <div className={`details-drawer${showDetails ? ' open' : ''}`}>
+        <div className="details-drawer-inner">
         <div className="ride-card-bottom">
           {ride.origin_lat && ride.destination_lat && (
             <a
@@ -127,13 +132,7 @@ function RideCard({ ride, currentUser, onJoin, onLeave, onDelete }) {
 
           <div className="riders-section">
             <h3 className="riders-heading">Riders</h3>
-            <div className="participant-tags">
-              {ride.participants.map((person) => (
-                <span key={person.id} className="participant-tag">
-                  {person.name}
-                </span>
-              ))}
-            </div>
+            <RiderList riders={ride.participants} onRiderClick={onRiderClick} />
           </div>
 
           <div className="card-actions">
@@ -153,7 +152,8 @@ function RideCard({ ride, currentUser, onJoin, onLeave, onDelete }) {
             )}
           </div>
         </div>
-      )}
+        </div>
+      </div>
     </article>
   );
 }

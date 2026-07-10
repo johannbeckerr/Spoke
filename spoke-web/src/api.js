@@ -48,6 +48,22 @@ export function getUser(userId) {
   return request(`/users/${userId}`);
 }
 
+// PUT /api/users/{id} — saves the rider's profile extras: riding style
+// (blank clears it) and, when a new one was picked, the bike photo as a
+// downscaled data URL. Returns the updated user.
+export function updateProfile(userId, profileData) {
+  return request(`/users/${userId}`, {
+    method: 'PUT',
+    body: JSON.stringify(profileData),
+  });
+}
+
+// Where a rider's bike photo lives. Not a fetch: <img src> loads it
+// directly, so the heavy image bytes stay out of every JSON payload.
+export function bikePhotoUrl(userId) {
+  return `${BASE_URL}/users/${userId}/bike-photo`;
+}
+
 // POST /api/users/google — swaps the JWT from Google's button for our own
 // user object. Creates the account on first sign-in. Fails with 401 if the
 // token is not a genuine, unexpired token issued for this app.

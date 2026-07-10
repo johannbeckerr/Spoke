@@ -1,27 +1,19 @@
 import { useState } from 'react';
 import { CloseIcon, MenuIcon } from './icons.jsx';
 import Avatar from './Avatar.jsx';
-import SupportModal from './SupportModal.jsx';
 
 // The top bar, responsive without any UI library:
-// - desktop (> 640px): logo left, nav links + user info right (plain flexbox)
-// - mobile  (≤ 640px): logo left, hamburger right; tapping it opens a menu panel
+// - desktop (> 640px): identity left, nav links + logout right (plain flexbox)
+// - mobile  (≤ 640px): identity left, hamburger right; tapping it opens a menu
 // A CSS media query decides which version is visible; React only remembers
 // whether the mobile menu is open.
 function Header({ user, onMyRides, onNavigate, onLogout }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showSupport, setShowSupport] = useState(false);
 
   // Navigating anywhere closes the mobile menu
   function go(screen) {
     setIsMenuOpen(false);
     onNavigate(screen);
-  }
-
-  // The support link opens a modal (not a screen), so close the menu first
-  function openSupport() {
-    setIsMenuOpen(false);
-    setShowSupport(true);
   }
 
   function handleLogoutClick() {
@@ -33,11 +25,12 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
     <header className="app-header">
       <div className="header-row">
         {/* The header's anchor slot follows the login state: signed in it
-            shows the rider (photo + first name, tap = back to the feed);
-            signed out it becomes the one LOG IN block for the whole app. */}
+            shows the rider — oversized square photo + first name, tap =
+            back to the feed; signed out it becomes the one LOG IN block
+            for the whole app. */}
         {user ? (
           <button className="identity" onClick={() => go('feed')}>
-            <Avatar user={user} />
+            <Avatar user={user} variant="block" />
             <span className="identity-name">{user.name.split(' ')[0]}</span>
           </button>
         ) : (
@@ -63,14 +56,14 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
                 >
                   My rides
                 </button>
+                <button className="nav-link" onClick={() => go('profile')}>
+                  Profile
+                </button>
                 <button className="nav-link" onClick={() => go('feedback')}>
                   Feedback
                 </button>
-                <button className="nav-link" onClick={openSupport}>
-                  Support the Project
-                </button>
               </nav>
-              <button className="btn btn-ghost" onClick={handleLogoutClick}>
+              <button className="logout-btn" onClick={handleLogoutClick}>
                 Log out
               </button>
             </>
@@ -80,9 +73,6 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
             <nav className="nav">
               <button className="nav-link" onClick={() => go('feedback')}>
                 Feedback
-              </button>
-              <button className="nav-link" onClick={openSupport}>
-                Support the Project
               </button>
             </nav>
           )}
@@ -118,32 +108,25 @@ function Header({ user, onMyRides, onNavigate, onLogout }) {
             >
               My rides
             </button>
+            <button className="mobile-link" onClick={() => go('profile')}>
+              Profile
+            </button>
             <button className="mobile-link" onClick={() => go('feedback')}>
               Feedback
             </button>
-            <button className="mobile-link support-cta" onClick={openSupport}>
-              Support the Project
-            </button>
             <div className="mobile-menu-footer">
               <span className="greeting">Hi, {user.name}</span>
-              <button className="btn btn-ghost" onClick={handleLogoutClick}>
+              <button className="logout-btn" onClick={handleLogoutClick}>
                 Log out
               </button>
             </div>
           </>
         ) : (
-          <>
-            <button className="mobile-link" onClick={() => go('feedback')}>
-              Feedback
-            </button>
-            <button className="mobile-link support-cta" onClick={openSupport}>
-              Support the Project
-            </button>
-          </>
+          <button className="mobile-link" onClick={() => go('feedback')}>
+            Feedback
+          </button>
         )}
       </nav>
-
-      {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
     </header>
   );
 }

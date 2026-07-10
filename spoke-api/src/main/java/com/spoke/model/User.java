@@ -39,6 +39,26 @@ public class User {
     @Column
     private String pictureUrl;
 
+    // Optional profile extras, filled in by the rider on the Profile
+    // screen and shown in the mini-profile other riders can open.
+    @Column
+    private String ridingStyle; // free text, e.g. "Social & Coffee"
+
+    // The rider's bike photo, stored as the data-URL string the phone
+    // uploads (the app downscales it client-side to keep it small).
+    // @JsonIgnore keeps the big base64 blob out of every JSON response —
+    // a photo inside each ride's participant list would balloon the feed.
+    // The frontend loads it through GET /users/{id}/bike-photo instead,
+    // and hasBikePhoto (below) tells it whether that is worth doing.
+    @JsonIgnore
+    @Column(length = 500000)
+    private String bikePhoto;
+
+    // Serialized as "hasBikePhoto": the lightweight stand-in for the blob
+    public boolean isHasBikePhoto() {
+        return bikePhoto != null;
+    }
+
     // JPA needs an empty constructor to build objects from database rows
     public User() {
     }
@@ -83,5 +103,21 @@ public class User {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public String getRidingStyle() {
+        return ridingStyle;
+    }
+
+    public void setRidingStyle(String ridingStyle) {
+        this.ridingStyle = ridingStyle;
+    }
+
+    public String getBikePhoto() {
+        return bikePhoto;
+    }
+
+    public void setBikePhoto(String bikePhoto) {
+        this.bikePhoto = bikePhoto;
     }
 }

@@ -3,7 +3,7 @@ import RideFeed from './RideFeed.jsx';
 // The personal dashboard, only reachable when logged in.
 // Both lists are derived from the same rides array the feed uses,
 // so joining or leaving a ride updates them instantly — no extra API calls.
-function MyRides({ rides, currentUser, onJoin, onLeave, onDelete }) {
+function MyRides({ rides, currentUser, onJoin, onLeave, onDelete, onRiderClick }) {
   // Rides where I'm the organizer
   const createdByMe = rides.filter(
     (ride) => ride.creator && ride.creator.id === currentUser.id
@@ -29,6 +29,7 @@ function MyRides({ rides, currentUser, onJoin, onLeave, onDelete }) {
           onJoin={onJoin}
           onLeave={onLeave}
           onDelete={onDelete}
+          onRiderClick={onRiderClick}
           emptyMessage="You haven't created any rides yet."
         />
       </section>
@@ -41,6 +42,7 @@ function MyRides({ rides, currentUser, onJoin, onLeave, onDelete }) {
           onJoin={onJoin}
           onLeave={onLeave}
           onDelete={onDelete}
+          onRiderClick={onRiderClick}
           emptyMessage="You haven't joined any rides organized by others yet."
         />
       </section>

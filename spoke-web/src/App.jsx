@@ -5,12 +5,14 @@ import * as api from './api.js';
 import { EMPTY_FILTERS } from './constants.js';
 import AuthScreen from './components/AuthScreen.jsx';
 import CreateRideForm from './components/CreateRideForm.jsx';
+import EditProfile from './components/EditProfile.jsx';
 import FeedbackSection from './components/FeedbackSection.jsx';
 import FilterBar from './components/FilterBar.jsx';
 import Header from './components/Header.jsx';
 import LogoutOverlay from './components/LogoutOverlay.jsx';
 import MyRides from './components/MyRides.jsx';
 import RideFeed from './components/RideFeed.jsx';
+import RiderProfile from './components/RiderProfile.jsx';
 import WelcomeModal from './components/WelcomeModal.jsx';
 
 // The root component owns all the shared state:
@@ -30,6 +32,8 @@ function App() {
   const [error, setError] = useState('');
   const [screen, setScreen] = useState('feed');
   const [loggingOut, setLoggingOut] = useState(false);
+  // The rider whose mini-profile is open (from tapping a roster row), or null
+  const [selectedRider, setSelectedRider] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   // Shown once per login, when the user lands on the dashboard
@@ -128,6 +132,17 @@ function App() {
     setLoggingOut(false);
   }
 
+  // Save the profile extras, then refresh the rides: every roster embeds
+  // its own copy of each rider, so the lists must be re-fetched for the
+  // new details to show up in other people's cards immediately. The
+  // Profile screen stays put — it flips itself to the profile view.
+  async function handleSaveProfile(profileData) {
+    const updatedUser = await api.updateProfile(user.id, profileData);
+    localStorage.setItem('spokeUser.v2', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    api.getRides().then(setRides).catch(() => {});
+  }
+
   async function handleCreateRide(rideData) {
     const newRide = await api.createRide({ ...rideData, creatorId: user.id });
     // Add the new ride and keep the feed sorted by date, soonest first
@@ -187,22 +202,45 @@ function App() {
     );
   }
 
-  // 'myrides' is protected — without a user we fall back to the feed
+  // 'myrides' and 'profile' are protected — without a user we fall back
+  // to the feed
   const onMyRides = screen === 'myrides' && user != null;
+  const onProfile = screen === 'profile' && user != null;
   const onFeedback = screen === 'feedback';
+  // Which screen the main area is actually showing (after the fallbacks
+  // above). Used as a React key: changing it remounts the wrapper, which
+  // replays the hard slide-in — that IS the screen transition.
+  const mainScreen = onFeedback ? 'feedback' : onProfile ? 'profile' : onMyRides ? 'myrides' : 'feed';
 
   return (
     <div className="app">
       {welcomeModal}
       {loggingOut && <LogoutOverlay />}
+      {selectedRider && (
+        <RiderProfile
+          rider={selectedRider}
+          rides={rides}
+          currentUser={user}
+          onCreateProfile={() => {
+            // Tapping yourself in a roster with an empty profile: close
+            // the modal and land straight in the profile editor
+            setSelectedRider(null);
+            setScreen('profile');
+          }}
+          onClose={() => setSelectedRider(null)}
+        />
+      )}
 
       <Header user={user} onMyRides={onMyRides} onNavigate={setScreen} onLogout={handleLogout} />
 
       <main className="app-main">
         {error && <p className="error-banner">{error}</p>}
 
+        <div className="screen-slide" key={mainScreen}>
         {onFeedback ? (
           <FeedbackSection user={user} onLoginRedirect={() => setScreen('auth')} />
+        ) : onProfile ? (
+          <EditProfile user={user} rides={rides} onSave={handleSaveProfile} />
         ) : onMyRides ? (
           <MyRides
             rides={rides}
@@ -210,6 +248,7 @@ function App() {
             onJoin={handleJoin}
             onLeave={handleLeave}
             onDelete={handleDelete}
+            onRiderClick={setSelectedRider}
           />
         ) : (
           <>
@@ -230,6 +269,7 @@ function App() {
               onJoin={handleJoin}
               onLeave={handleLeave}
               onDelete={handleDelete}
+              onRiderClick={setSelectedRider}
               emptyMessage={
                 rides.length > 0 && visibleRides.length === 0
                   ? 'No rides match your filters.'
@@ -238,6 +278,7 @@ function App() {
             />
           </>
         )}
+        </div>
       </main>
     </div>
   );

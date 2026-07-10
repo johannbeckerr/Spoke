@@ -8,6 +8,7 @@ function RideFeed({
   onJoin,
   onLeave,
   onDelete,
+  onRiderClick,
   emptyMessage = 'No rides yet. Be the first to create one! 🚵',
 }) {
   if (rides.length === 0) {
@@ -28,6 +29,7 @@ function RideFeed({
           onJoin={onJoin}
           onLeave={onLeave}
           onDelete={onDelete}
+          onRiderClick={onRiderClick}
         />
       ))}
     </div>

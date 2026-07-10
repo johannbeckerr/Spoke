@@ -8,16 +8,20 @@ import com.spoke.model.User;
 import com.spoke.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Base64;
 import java.util.Collections;
 
 // Simple MVP authentication:
@@ -95,6 +99,52 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
+    // PUT /api/users/{id} with body { "ridingStyle", "bikePhoto" }.
+    // ridingStyle: blank clears it. bikePhoto: a downscaled image data URL
+    // from the phone's picker; omitted or null means "keep the current one".
+    // There are no sessions in this MVP, so the server trusts the id the
+    // client sends — the same posture as the rest of the API.
+    @PutMapping("/{id}")
+    public User updateProfile(@PathVariable Long id, @RequestBody ProfileRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        user.setRidingStyle(blankToNull(request.ridingStyle));
+
+        if (request.bikePhoto != null) {
+            // Must be a real image data URL — the bike-photo endpoint below
+            // decodes this format and nothing else.
+            if (!request.bikePhoto.startsWith("data:image/")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The bike photo must be an image");
+            }
+            // The app downscales before uploading, so this only triggers when
+            // someone bypasses the app; it also protects the column size.
+            if (request.bikePhoto.length() > 500_000) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "That photo is too large");
+            }
+            user.setBikePhoto(request.bikePhoto);
+        }
+        return userRepository.save(user);
+    }
+
+    // GET /api/users/{id}/bike-photo — the raw image bytes. The photo is
+    // deliberately absent from all JSON (see User.bikePhoto); an <img> tag
+    // pointed here loads it on demand, only when a profile is opened.
+    @GetMapping("/{id}/bike-photo")
+    public ResponseEntity<byte[]> bikePhoto(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        String data = user.getBikePhoto();
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This rider has no bike photo");
+        }
+
+        // Stored as "data:image/jpeg;base64,<bytes>" — split it back apart
+        String mime = data.substring("data:".length(), data.indexOf(';'));
+        byte[] bytes = Base64.getDecoder().decode(data.substring(data.indexOf(',') + 1));
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mime)).body(bytes);
+    }
+
     // POST /api/users/google with body { "credential": "<the JWT from the Google button>" }
     @PostMapping("/google")
     public User googleLogin(@RequestBody GoogleRequest request) {
@@ -152,6 +202,11 @@ public class UserController {
         return value == null || value.trim().isEmpty();
     }
 
+    // "  " and "" both mean "not set" — store them as null, not as noise
+    private String blankToNull(String value) {
+        return isBlank(value) ? null : value.trim();
+    }
+
     // Tiny classes describing the JSON request bodies.
     // Jackson (Spring's JSON library) fills the public fields automatically.
     public static class RegisterRequest {
@@ -167,5 +222,10 @@ public class UserController {
 
     public static class GoogleRequest {
         public String credential;
+    }
+
+    public static class ProfileRequest {
+        public String ridingStyle;
+        public String bikePhoto;
     }
 }

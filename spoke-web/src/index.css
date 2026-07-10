@@ -41,6 +41,7 @@ body {
   background: #f4f6f8;
   color: #1f2933;
   line-height: 1.5; /* body text stays airy — the Readability Rule */
+  overflow-x: hidden; /* screens slide in from the right; never show a horizontal scrollbar for it */
 }
 
 /* Form controls do not inherit the page font on their own */
@@ -59,15 +60,18 @@ h2 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: -0.02em;
+  line-height: 1.1; /* big caps, tight leading — no tall empty bands */
   color: #0b112d;
 }
 
+/* clamp() = "maximum safe": grows with the viewport up to 1.875rem but
+   can never outgrow a narrow phone, so the toolbar row cannot break. */
 h1 {
-  font-size: 1.5rem;
+  font-size: clamp(1.35rem, 5.5vw, 1.875rem);
 }
 
 h2 {
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   margin-bottom: 1rem;
 }
 
@@ -76,10 +80,11 @@ h2 {
 .btn {
   border: none;
   border-radius: 0;
-  padding: 0.55rem 1.1rem;
+  padding: 0.6rem 1.2rem; /* a touch more room around the bigger type */
   min-height: 44px; /* comfortable touch target on phones */
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
+  white-space: nowrap; /* a label never wraps into two cramped lines */
   cursor: pointer;
   touch-action: manipulation; /* no double-tap zoom delay on touch screens */
   transition: background 0.15s ease, transform 0.05s ease;
@@ -98,25 +103,40 @@ h2 {
   background: #1d4ed8;
 }
 
+/* Leave and Delete: the card's secondary actions, hardened to the same
+   calibrated frame as everything else — 2px ink border, flat shadow,
+   press-into-shadow. Fill colors keep telling them apart. */
 .btn-leave {
   background: #ffffff;
-  color: #4b5563;
-  border: 1px solid #d1d5db;
+  color: #0b112d;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 0 #000;
 }
 
 .btn-leave:hover {
   background: #f3f4f6;
 }
 
-/* Destructive action — soft fill so it stands apart from "Leave" */
+.btn-leave:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* Destructive action — soft red fill so it stands apart from "Leave" */
 .btn-delete {
   background: #fef2f2;
   color: #dc2626;
-  border: none;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 0 #000;
 }
 
 .btn-delete:hover {
   background: #fee2e2;
+}
+
+.btn-delete:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .btn-ghost {
@@ -138,7 +158,7 @@ h2 {
   min-height: 44px; /* comfortable touch target on phones */
   border: 1px solid #cbd2d9;
   border-radius: 0;
-  font-size: 1rem; /* 16px minimum — anything smaller makes iOS zoom in on focus */
+  font-size: 1.05rem; /* comfortably past the 16px floor below which iOS zooms on focus */
   background: #fff;
 }
 
@@ -485,7 +505,8 @@ h2 {
   background: #0b112d;
   color: #fff;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
+  white-space: nowrap;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -499,6 +520,31 @@ h2 {
 .header-login:active {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 0 #000;
+}
+
+/* Log out: a calibrated hard block — lighter voice than LOG IN (white
+   fill, smaller shadow), same mechanical press. Used on the desktop bar
+   and in the mobile menu footer. */
+.logout-btn {
+  min-height: 44px;
+  padding: 0.55rem 1.1rem;
+  background: #fff;
+  color: #0b112d;
+  font-family: inherit;
+  font-size: 1rem;
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
+  cursor: pointer;
+}
+
+.logout-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .header-desktop {
@@ -525,12 +571,13 @@ h2 {
   cursor: pointer;
 }
 
-/* Paired with the photo again, the name drops back to label size —
-   small caps get positive tracking so the letters keep their air. */
+/* Scaled up to match the oversized photo block: display-size caps,
+   so they take the tight tracking and leading of the heading tier. */
 .identity-name {
-  font-size: 1.05rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.02em;
+  line-height: 1;
   text-transform: uppercase;
   color: #0b112d;
   /* Some Google accounts have no name and fall back to the email address —
@@ -541,29 +588,60 @@ h2 {
   white-space: nowrap;
 }
 
-/* The one permitted circle: the profile photo, inside a hard outline.
-   Deliberately NO offset shadow here — on a circle the offset copy peeks
-   out as a lopsided crescent and makes the edge look deformed. Offset
-   shadows are for straight-edged blocks; circles get a heavier ring. */
+/* Profile photo base — size and shape come from the variant classes */
 .avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 3px solid #0b112d;
+  border: 2px solid #000; /* calibrated line weight */
   object-fit: cover;
   background: #fff;
   flex-shrink: 0;
 }
 
-/* No photo (password account) or a broken URL: solid ink block + initial */
+/* Header identity: the oversized square, heaviest shadow */
+.avatar-block {
+  width: 56px;
+  height: 56px;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 #000;
+}
+
+/* Roster rows: the compact square, chip-scale shadow */
+.avatar-tile {
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+/* Profile pages and modals: the hero cut — dominant, still hard-edged */
+.avatar-hero {
+  width: 112px;
+  height: 112px;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 #000;
+}
+
+/* No photo (password account) or a broken URL: a solid block + initial.
+   Ink/white by default (the header); roster tiles override the colors
+   inline with a per-rider pastel. */
 .avatar-fallback {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: #0b112d;
   color: #fff;
-  font-size: 1.1rem;
   font-weight: 700;
+}
+
+.avatar-block.avatar-fallback {
+  font-size: 1.4rem;
+}
+
+.avatar-tile.avatar-fallback {
+  font-size: 1rem;
+}
+
+.avatar-hero.avatar-fallback {
+  font-size: 2.75rem;
 }
 
 /* ---------- Logout overlay (brutalist) ---------- */
@@ -631,8 +709,8 @@ h2 {
 
 .nav-link {
   font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: #52606d;
   background: none;
   border: none;
@@ -728,8 +806,8 @@ h2 {
 
   .mobile-link {
     font-family: inherit;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.15rem;
+    font-weight: 700;
     color: #52606d;
     text-align: left;
     background: none;
@@ -748,24 +826,6 @@ h2 {
     color: #1d4ed8;
   }
 
-  /* Highlighted CTA: full-width industrial-yellow block, navy text + border */
-  .mobile-link.support-cta {
-    width: 100%;
-    margin-top: 0.25rem;
-    background: #ffd700;
-    color: #0b112d;
-    border: 2px solid #0b112d;
-    border-radius: 0;
-    font-weight: 800;
-    text-align: center;
-  }
-
-  /* Brutalist color inversion on hover — no transition */
-  .mobile-link.support-cta:hover {
-    background: #0b112d;
-    color: #ffd700;
-  }
-
   .mobile-menu-footer {
     display: flex;
     align-items: center;
@@ -776,17 +836,271 @@ h2 {
   }
 }
 
-/* The slide is decoration; skip it for riders who ask for less motion */
+/* ---------- Mechanical motion (screens, drawers, roster rows) ---------- */
+/* One motion language app-wide: short, linear or stepped, transform-only.
+   No easing curves, no springs, no fades — things move like machinery. */
+
+/* Screen changes: the incoming screen slides in hard from the right while
+   the old one is already gone (remount via a React key replays this). */
+.screen-slide {
+  animation: screen-in 0.2s linear;
+}
+
+@keyframes screen-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+/* The auth screen is its own layout root, so it carries the slide itself */
+.login-screen {
+  animation: screen-in 0.2s linear;
+}
+
+/* Roster rows snap in through three discrete frames — a mechanical
+   insertion, not a glide (and no opacity fade: zero softness). */
+.rider-row {
+  animation: rider-snap 0.15s steps(3, jump-none);
+}
+
+@keyframes rider-snap {
+  from {
+    transform: translateY(10px) scale(0.85);
+  }
+}
+
+/* Card details: a drawer physically pushed open/shut. Animating
+   grid-template-rows 0fr -> 1fr is a real height change, so the card's
+   border and flat shadow travel with the edge and the cards below get
+   shoved down rigidly. visibility waits for the close to finish, then
+   pulls the hidden buttons out of the tab order (mobile-menu pattern). */
+.details-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.15s linear, visibility 0s linear 0.15s;
+}
+
+.details-drawer.open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 0.15s linear;
+}
+
+.details-drawer-inner {
+  overflow: hidden;
+  min-height: 0; /* lets the row actually collapse to zero */
+}
+
+/* ---------- Rider mini-profile modal (brutalist) ---------- */
+
+.profile-overlay {
+  display: flex; /* instant — no fade, same as every overlay here */
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 1rem;
+  background: rgba(11, 17, 45, 0.6); /* flat dark block, focus on the card */
+}
+
+/* Modal tier: 3px border, the heavy 8px flat shadow (logout-card's frame),
+   snapping open through discrete frames like the roster rows. */
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 100%;
+  max-width: 380px;
+  max-height: 85vh; /* with a bike photo the card can outgrow a phone screen */
+  overflow-y: auto;
+  padding: 1.25rem;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+  box-shadow: 8px 8px 0 0 #000;
+  animation: rider-snap 0.15s steps(3, jump-none);
+}
+
+/* One centered vertical axis: the name sits on top, the big square
+   portrait directly under it, everything below lined up on the middle */
+.profile-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+/* The rider's name is the card's headline — but it's data, so it keeps
+   its natural mixed case (no uppercase transform). */
+.profile-name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-transform: none;
+  text-align: center;
+  color: #0b112d;
+  overflow-wrap: anywhere;
+}
+
+.profile-section-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center; /* labels sit on the card's center axis */
+  color: #0b112d;
+}
+
+/* The profile's one loud action — "Edit profile" under your own card,
+   or "Create your profile now" when it's still empty */
+.profile-cta {
+  min-height: 48px;
+  width: 100%;
+  padding: 0.75rem 1.2rem;
+  background: #2563eb; /* the app's primary blue */
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 #000;
+  cursor: pointer;
+}
+
+.profile-cta:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* Parchment chips for the rider's own words (riding style) — mixed case,
+   because they're the rider's data, not UI labels */
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+/* The badge row is right-aligned inside ride cards; on the profile's
+   center axis it centers like everything else */
+.profile-card .badges {
+  justify-content: center;
+}
+
+.profile-tag {
+  padding: 0.3rem 0.7rem;
+  background: #f2ead8;
+  color: #0b112d;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid #000;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+/* The bike photo: a compact hard square on the center axis — full-width
+   forced needless scrolling on small phones; the portrait stays the
+   card's biggest face, the bike a punchy supporting block */
+.profile-bike {
+  display: block;
+  width: 192px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  object-fit: cover;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 #000;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Two hard stat blocks: big number over a small-caps label */
+.profile-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.6rem;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.profile-stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #0b112d;
+}
+
+.profile-stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #0b112d;
+}
+
+.profile-close {
+  min-height: 44px;
+  padding: 0.6rem 1.2rem;
+  background: #fff;
+  color: #0b112d;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
+  cursor: pointer;
+}
+
+.profile-close:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* All of this motion is decoration; skip it for riders who ask for less */
 @media (prefers-reduced-motion: reduce) {
   .mobile-menu,
   .mobile-menu.open {
     transition: none;
   }
+
+  .screen-slide,
+  .login-screen,
+  .rider-row,
+  .profile-card {
+    animation: none;
+  }
+
+  .details-drawer,
+  .details-drawer.open {
+    transition: visibility 0s;
+  }
 }
 
+/* "Hi, name" in the menu footer — scaled up to a dominant ink statement */
 .greeting {
-  color: #52606d;
-  font-size: 0.95rem;
+  color: #0b112d;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
   overflow-wrap: anywhere; /* a long user name must not push the layout wider */
 }
 
@@ -850,6 +1164,56 @@ h2 {
   box-shadow: 0 2px 8px rgba(31, 41, 51, 0.06);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+/* The Profile screen's form: same hard frame as the filter card */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 480px;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 #000;
+  padding: 1.5rem;
+}
+
+/* The visible face of the hidden file input: a vibrant amber block that
+   opens the device's own photo picker */
+.file-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0.6rem 1.2rem;
+  background: #fde68a;
+  color: #0b112d;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
+  cursor: pointer;
+}
+
+.file-trigger:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* Tiny square proof of what was just picked, before saving */
+.file-preview {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  margin-top: 0.5rem;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
 }
 
 /* ---------- Feedback panel (brutalist) ---------- */
@@ -935,10 +1299,10 @@ h2 {
    shadow keep it unmistakably brutalist. */
 .field-label {
   align-self: flex-start; /* hug the text, don't stretch across the field */
-  padding: 0.15rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   background: #f2ead8; /* parchment — one step deeper than the old cream */
   color: #0b112d;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px; /* small caps need air, not compression */
@@ -1056,8 +1420,9 @@ h2 {
 
 .ride-date {
   color: #0b112d;
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .ride-meta-row {
@@ -1071,7 +1436,8 @@ h2 {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: #0b112d;
 }
 
@@ -1139,10 +1505,10 @@ h2 {
 
 .route-label {
   align-self: flex-start;
-  padding: 0.1rem 0.45rem;
+  padding: 0.15rem 0.5rem;
   background: #f2ead8; /* parchment — one step deeper than the old cream */
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #0b112d;
@@ -1198,7 +1564,7 @@ h2 {
   border-radius: 0;
   box-shadow: 2px 2px 0 0 #000;
   color: #0b112d;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1261,26 +1627,50 @@ h2 {
 
 .riders-heading {
   margin: 0 0 0.5rem;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 1px; /* small caps get air, same as the chips */
   color: #0b112d;
 }
 
-.participant-tags {
+/* Roster: a strict vertical stack — every rider owns a full row, names
+   always one below the other, steady brutalist rhythm. */
+.rider-list {
+  list-style: none;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.participant-tag {
-  background: #f2ead8; /* parchment — one step deeper than the old cream */
-  border: 1px solid #000;
+/* The whole row is one button: tile + name open the rider's mini-profile.
+   Full width = a touch target the size of the row, not just the name. */
+.rider-btn {
+  display: flex;
+  align-items: center; /* name vertically centered on its tile */
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.25rem;
+  background: none;
+  border: none;
   border-radius: 0;
-  box-shadow: 2px 2px 0 0 #000;
-  padding: 0.25rem 0.5rem; /* 4px 8px */
-  font-size: 0.85rem; /* names stay mixed-case and regular — they're data */
-  color: #0b112d;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rider-btn:hover {
+  background: #e4e7eb; /* the house hover shift — shows the row is live */
+}
+
+.rider-btn:active {
+  transform: translate(1px, 1px); /* tiny mechanical nudge on press */
+}
+
+.rider-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0b112d; /* names stay mixed-case — they're data, not labels */
 }
 
 /* Delete (creator only) + Join/Leave sit together */
