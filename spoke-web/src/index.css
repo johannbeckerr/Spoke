@@ -370,7 +370,7 @@ h2 {
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border: 3px solid #000;
+  border: 2px solid #000;
   box-shadow: 4px 4px 0 0 #000;
 }
 
@@ -489,7 +489,7 @@ h2 {
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  border: 3px solid #000;
+  border: 2px solid #000;
   border-radius: 0;
   box-shadow: 4px 4px 0 0 #000; /* flat and hard, no blur */
   cursor: pointer;
@@ -662,7 +662,7 @@ h2 {
   height: 44px;
   color: #0b112d;
   background: #fff;
-  border: 3px solid #000;
+  border: 2px solid #000;
   border-radius: 0;
   box-shadow: 4px 4px 0 0 #000; /* flat and heavy, no blur */
   padding: 0;
@@ -819,9 +819,11 @@ h2 {
 /* ---------- Feed filters ---------- */
 
 .filter-bar {
-  background: #fff;
+  background: #fff; /* clean neutral block behind the pastel label chips */
+  /* Same frame as the ride cards: sleek border, flat ink shadow, no blur */
+  border: 2px solid #000;
   border-radius: 0;
-  box-shadow: 0 2px 8px rgba(31, 41, 51, 0.06);
+  box-shadow: 4px 4px 0 0 #000;
   padding: 1rem 1.25rem;
   margin-bottom: 1.25rem;
   display: flex;
@@ -940,7 +942,7 @@ h2 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px; /* small caps need air, not compression */
-  border: 2px solid #000;
+  border: 1px solid #000; /* thin at chip scale so it doesn't crowd the text */
   border-radius: 0;
   box-shadow: 2px 2px 0 0 #000; /* flat, no blur */
 }
@@ -1031,9 +1033,9 @@ h2 {
 
 .ride-card {
   background: #fff;
-  /* Medium border (3px, not the heavy 4px of the header) + flat offset
-     shadow: the card pops off the page mechanically, no blur anywhere. */
-  border: 3px solid #000;
+  /* Sleek 2px frame + flat offset shadow: the card pops off the page
+     mechanically, no blur anywhere. */
+  border: 2px solid #000;
   border-radius: 0;
   box-shadow: 4px 4px 0 0 #000;
   padding: 1.25rem 1.5rem;
@@ -1144,7 +1146,7 @@ h2 {
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #0b112d;
-  border: 2px solid #000;
+  border: 1px solid #000;
   border-radius: 0;
   box-shadow: 2px 2px 0 0 #000;
 }
@@ -1192,7 +1194,7 @@ h2 {
    contrast, and the hard frame + flat shadow doing the brutalist work. */
 .badge {
   padding: 0.3rem 0.7rem;
-  border: 2px solid #000;
+  border: 1px solid #000;
   border-radius: 0;
   box-shadow: 2px 2px 0 0 #000;
   color: #0b112d;
@@ -1273,7 +1275,7 @@ h2 {
 
 .participant-tag {
   background: #f2ead8; /* parchment — one step deeper than the old cream */
-  border: 2px solid #000;
+  border: 1px solid #000;
   border-radius: 0;
   box-shadow: 2px 2px 0 0 #000;
   padding: 0.25rem 0.5rem; /* 4px 8px */
