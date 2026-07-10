@@ -1,5 +1,14 @@
 {
   "appId": "com.spoke.app",
   "appName": "Spoke",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "clientId": "656766909681-6812rlmo4hsg360tomue08ksui7gls3a.apps.googleusercontent.com",
+      "serverClientId": "656766909681-6812rlmo4hsg360tomue08ksui7gls3a.apps.googleusercontent.com",
+      "androidClientId": "656766909681-6812rlmo4hsg360tomue08ksui7gls3a.apps.googleusercontent.com"
+    }
+  }
 }
+

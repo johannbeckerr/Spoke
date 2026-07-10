@@ -42,6 +42,13 @@ dependencies {
     implementation project(':capacitor-cordova-android-plugins')
 }
 
+// The Google Auth plugin hardcodes the 2020-era play-services-auth 18.+ and
+// does not expose a variables.gradle override. Force the newest release that
+// still ships the (deprecated) GoogleSignIn API the plugin is built on.
+configurations.all {
+    resolutionStrategy.force 'com.google.android.gms:play-services-auth:21.3.0'
+}
+
 apply from: 'capacitor.build.gradle'
 
 try {

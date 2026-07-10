@@ -9,7 +9,7 @@ function FilterBar({ filters, onChange }) {
   return (
     <div className="filter-bar">
       <label className="field">
-        Date
+        <span className="field-label">Date</span>
         <input
           className="input"
           type="date"
@@ -19,7 +19,7 @@ function FilterBar({ filters, onChange }) {
       </label>
 
       <label className="field">
-        Ride type
+        <span className="field-label">Ride type</span>
         <select
           className="input"
           value={filters.rideType}
@@ -35,7 +35,7 @@ function FilterBar({ filters, onChange }) {
       </label>
 
       <label className="field">
-        Pace / level
+        <span className="field-label">Pace / level</span>
         <select
           className="input"
           value={filters.pace}

@@ -113,7 +113,7 @@ function CreateRideForm({ onCreate }) {
 
       <div className="form-row">
         <label className="field">
-          Starting point
+          <span className="field-label">Starting point</span>
           <div className="autocomplete-wrap">
             <input
               className="input"
@@ -153,7 +153,7 @@ function CreateRideForm({ onCreate }) {
         </label>
 
         <label className="field">
-          Destination
+          <span className="field-label">Destination</span>
           <div className="autocomplete-wrap">
             <input
               className="input"
@@ -195,7 +195,7 @@ function CreateRideForm({ onCreate }) {
 
       <div className="form-row">
         <label className="field">
-          Date &amp; time
+          <span className="field-label">Date &amp; time</span>
           <input
             className="input"
             type="datetime-local"
@@ -206,7 +206,7 @@ function CreateRideForm({ onCreate }) {
         </label>
 
         <label className="field">
-          Ride type
+          <span className="field-label">Ride type</span>
           <select
             className="input"
             value={rideType}
@@ -221,7 +221,7 @@ function CreateRideForm({ onCreate }) {
         </label>
 
         <label className="field">
-          Pace / level
+          <span className="field-label">Pace / level</span>
           <select
             className="input"
             value={pace}

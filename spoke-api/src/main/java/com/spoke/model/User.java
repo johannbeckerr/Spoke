@@ -33,6 +33,12 @@ public class User {
     @Column
     private String password;
 
+    // URL of the rider's Google profile photo, taken from the verified
+    // Google token. Null for password accounts (and for Google accounts
+    // without a photo) — the frontend shows an initial-letter avatar then.
+    @Column
+    private String pictureUrl;
+
     // JPA needs an empty constructor to build objects from database rows
     public User() {
     }
@@ -69,5 +75,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }

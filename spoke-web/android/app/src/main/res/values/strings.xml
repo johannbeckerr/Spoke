@@ -4,4 +4,5 @@
     <string name="title_activity_main">Spoke</string>
     <string name="package_name">com.spoke.app</string>
     <string name="custom_url_scheme">com.spoke.app</string>
+    <string name="server_client_id">656766909681-6812rlmo4hsg360tomue08ksui7gls3a.apps.googleusercontent.com</string>
 </resources>

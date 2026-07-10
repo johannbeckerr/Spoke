@@ -42,6 +42,12 @@ export function login(email, password) {
   });
 }
 
+// GET /api/users/{id} — confirms a remembered login still points at a real
+// account (404 when it does not). Called once when the app starts.
+export function getUser(userId) {
+  return request(`/users/${userId}`);
+}
+
 // POST /api/users/google — swaps the JWT from Google's button for our own
 // user object. Creates the account on first sign-in. Fails with 401 if the
 // token is not a genuine, unexpired token issued for this app.

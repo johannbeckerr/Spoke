@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import * as api from './api.js';
 import { EMPTY_FILTERS } from './constants.js';
 import AuthScreen from './components/AuthScreen.jsx';
@@ -6,6 +8,7 @@ import CreateRideForm from './components/CreateRideForm.jsx';
 import FeedbackSection from './components/FeedbackSection.jsx';
 import FilterBar from './components/FilterBar.jsx';
 import Header from './components/Header.jsx';
+import LogoutOverlay from './components/LogoutOverlay.jsx';
 import MyRides from './components/MyRides.jsx';
 import RideFeed from './components/RideFeed.jsx';
 import WelcomeModal from './components/WelcomeModal.jsx';
@@ -26,6 +29,7 @@ function App() {
   const [rides, setRides] = useState([]);
   const [error, setError] = useState('');
   const [screen, setScreen] = useState('feed');
+  const [loggingOut, setLoggingOut] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   // Shown once per login, when the user lands on the dashboard
@@ -46,6 +50,25 @@ function App() {
       .getRides()
       .then(setRides)
       .catch(() => setError('Could not load rides. Is the backend running on port 8080?'));
+  }, []);
+
+  // Runs once when the app opens. If a remembered user was restored above,
+  // quietly confirm the account still exists on the server — the dev database
+  // is in-memory and empty after every backend restart, so a remembered login
+  // can point at a user that is gone. Confirmed: store the freshest copy.
+  // Gone (404): log out. Network trouble: leave the session alone — being
+  // offline for a moment is not a reason to log someone out.
+  useEffect(() => {
+    if (!user) return;
+    api
+      .getUser(user.id)
+      .then((freshUser) => {
+        localStorage.setItem('spokeUser.v2', JSON.stringify(freshUser));
+        setUser(freshUser);
+      })
+      .catch((err) => {
+        if (err.status === 404) handleLogout();
+      });
   }, []);
 
   // Apply the feed filters with a plain array filter. A ride is visible
@@ -77,11 +100,32 @@ function App() {
     saveUser(await api.googleLogin(credential));
   }
 
-  function handleLogout() {
+  async function handleLogout() {
+    // A full-screen "logging off" cover replaces an abrupt screen snap.
+    // It never shows for less than a beat: an instant flash reads as a
+    // glitch, not as feedback.
+    setLoggingOut(true);
+    const minimumShow = new Promise((resolve) => setTimeout(resolve, 900));
+
+    // On the phone, also make Google Play Services forget the session, so the
+    // next "Continue with Google" shows the account picker again instead of
+    // silently reusing the last account. If Google errors, log out anyway —
+    // a signOut failure must never leave someone stuck logged in.
+    if (Capacitor.isNativePlatform()) {
+      try {
+        await GoogleAuth.signOut();
+      } catch (err) {
+        console.error('GoogleAuth.signOut() failed:', err);
+      }
+    }
+
     localStorage.removeItem('spokeUser.v2');
     setUser(null);
     setShowForm(false);
     setScreen('feed'); // My Rides is not available anymore
+
+    await minimumShow;
+    setLoggingOut(false);
   }
 
   async function handleCreateRide(rideData) {
@@ -150,6 +194,7 @@ function App() {
   return (
     <div className="app">
       {welcomeModal}
+      {loggingOut && <LogoutOverlay />}
 
       <Header user={user} onMyRides={onMyRides} onNavigate={setScreen} onLogout={handleLogout} />
 

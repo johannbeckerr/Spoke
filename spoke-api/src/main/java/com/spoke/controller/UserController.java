@@ -9,6 +9,8 @@ import com.spoke.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,6 +85,16 @@ public class UserController {
         return user;
     }
 
+    // GET /api/users/{id} — the frontend calls this when it starts, to check
+    // that a login remembered in the browser still points at a real account.
+    // The dev database lives in memory and is empty after every restart, so
+    // remembered users can go stale; a 404 tells the frontend to log out.
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
     // POST /api/users/google with body { "credential": "<the JWT from the Google button>" }
     @PostMapping("/google")
     public User googleLogin(@RequestBody GoogleRequest request) {
@@ -115,11 +127,25 @@ public class UserController {
         String email = payload.getEmail().trim().toLowerCase();
         String name = (String) payload.get("name");
         String displayName = isBlank(name) ? email : name; // Google does not always send a name
+        String picture = (String) payload.get("picture"); // may be null
 
         // Log the rider in, or create the account on first sign-in.
         // Google accounts are stored without a password.
         return userRepository.findByEmailIgnoreCase(email)
-                .orElseGet(() -> userRepository.save(new User(displayName, email, null)));
+                .map(existing -> {
+                    // Keep the stored photo in step with Google. This also
+                    // backfills accounts created before photos were stored.
+                    if (picture != null && !picture.equals(existing.getPictureUrl())) {
+                        existing.setPictureUrl(picture);
+                        return userRepository.save(existing);
+                    }
+                    return existing;
+                })
+                .orElseGet(() -> {
+                    User created = new User(displayName, email, null);
+                    created.setPictureUrl(picture);
+                    return userRepository.save(created);
+                });
     }
 
     private boolean isBlank(String value) {

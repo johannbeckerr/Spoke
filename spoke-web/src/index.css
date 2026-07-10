@@ -1,7 +1,32 @@
 /* ============================================================
    Spoke — single global stylesheet.
-   Plain CSS, organized top-down: base → layout → components.
+   Plain CSS, organized top-down: fonts → base → layout → components.
    ============================================================ */
+
+/* ---------- Typeface: Space Grotesk ---------- */
+/* Geometric grotesque: blocky at 700, easy to read at 400 — one face for
+   both moods. The files ship inside the app (public/fonts/), so the phone
+   never needs a network connection just to draw text. It is a variable
+   font covering weights 300–700 in one file per alphabet: the browser
+   picks latin or latin-ext by which characters actually appear.
+   NOTE: this face has no 900 — 700 IS its heaviest ("black") weight. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 
 /* ---------- Base ---------- */
 
@@ -12,10 +37,29 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   background: #f4f6f8;
   color: #1f2933;
-  line-height: 1.5;
+  line-height: 1.5; /* body text stays airy — the Readability Rule */
+}
+
+/* Form controls do not inherit the page font on their own */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Headings are the loud voice: heaviest weight, all caps, tracking pulled
+   tight so they read as compressed blocks. Body text below keeps normal
+   spacing and weight so lists and forms stay effortless to read. */
+h1,
+h2 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: #0b112d;
 }
 
 h1 {
@@ -145,7 +189,7 @@ h2 {
   background: #0b112d;
   color: #fff;
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -169,7 +213,7 @@ h2 {
   border-radius: 0;
   font-family: inherit;
   font-size: 0.9rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
@@ -209,7 +253,7 @@ h2 {
 .support-title {
   margin: 0;
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -255,7 +299,7 @@ h2 {
   text-decoration: none;
   font-family: inherit;
   font-size: 0.9rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
@@ -292,7 +336,7 @@ h2 {
   align-items: center;
   justify-content: center;
   font-size: 5rem;
-  font-weight: 900;
+  font-weight: 700;
   color: #0b112d;
   margin-bottom: 1.5rem;
 }
@@ -315,7 +359,83 @@ h2 {
 .google-login {
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 0; /* first thing under the wordmark, which brings its own gap */
+}
+
+/* Native "Continue with Google": Google brand blue inside the brutalist
+   frame — hard border, flat shadow, square corners, shouting caps. */
+.btn-google {
+  background: #4285f4;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 0 #000;
+}
+
+.btn-google:hover {
+  background: #3367d6; /* one step darker, still flat */
+}
+
+.btn-google:active {
+  transform: translate(2px, 2px); /* into its own shadow, no scaling */
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.btn-google:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+/* Hard "or" between the Google door and the email form */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: #0b112d;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 2px; /* a line with weight, not a hairline */
+  background: #0b112d;
+}
+
+/* Tiny ring that spins while we wait on Google or our own server.
+   currentColor makes it inherit whatever text color the button has. */
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  margin-right: 0.5em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-turn 0.75s linear infinite;
+}
+
+@keyframes spinner-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Replaces the web Google button while the backend call is in flight */
+.google-busy {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: #52606d;
+  font-size: 0.95rem;
 }
 
 /* Ghost button with a visible border — used for the Sign up / Log in toggle */
@@ -342,7 +462,9 @@ h2 {
 
 .app-header {
   background: #fff;
-  border-bottom: 1px solid #e4e7eb;
+  /* One hard black line and nothing else — no shadow band, no gray
+     hairlines. The single line IS the separation. */
+  border-bottom: 4px solid #0b112d;
   padding: 0.75rem 1.5rem;
   position: sticky;
   top: 0;
@@ -356,32 +478,148 @@ h2 {
   justify-content: space-between;
 }
 
-/* Header wordmark: "Sp" + SpokeLogoIcon + "ke", flush together as one word */
-.brand-logo {
-  display: inline-flex;
-  align-items: center;
+/* Signed out, the header's anchor slot is one loud LOG IN block */
+.header-login {
+  min-height: 44px; /* comfortable touch target */
+  padding: 0.55rem 1.4rem;
+  background: #0b112d;
+  color: #fff;
   font-family: inherit;
-  font-size: 3rem;
-  font-weight: 900;
-  line-height: 1;
-  color: #0b112d;
-  background: none;
-  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 3px solid #000;
   border-radius: 0;
-  padding: 0;
+  box-shadow: 4px 4px 0 0 #000; /* flat and hard, no blur */
   cursor: pointer;
 }
 
-/* Same x-height correction as the login mark: nudge the symbol down so it
-   sits level with the surrounding "Sp"/"ke" instead of riding above them. */
-.brand-logo-icon {
-  transform: translateY(0.09em);
+/* Pressing pushes the block into its own shadow */
+.header-login:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
 }
 
 .header-desktop {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* ---------- Header identity block (avatar + name, brutalist) ---------- */
+
+/* Replaces the wordmark while logged in; still a button back to the feed.
+   min-height matches the LOG IN block and the hamburger, so the header
+   keeps exactly the same height in every state. */
+.identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem; /* breathing room between the photo and the name */
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Paired with the photo again, the name drops back to label size —
+   small caps get positive tracking so the letters keep their air. */
+.identity-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #0b112d;
+  /* Some Google accounts have no name and fall back to the email address —
+     cap it instead of letting it shove the menu off a small screen. */
+  max-width: 45vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The one permitted circle: the profile photo, inside a hard outline.
+   Deliberately NO offset shadow here — on a circle the offset copy peeks
+   out as a lopsided crescent and makes the edge look deformed. Offset
+   shadows are for straight-edged blocks; circles get a heavier ring. */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #0b112d;
+  object-fit: cover;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+/* No photo (password account) or a broken URL: solid ink block + initial */
+.avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b112d;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* ---------- Logout overlay (brutalist) ---------- */
+
+.logout-overlay {
+  display: flex; /* instant — no fade, same as the other overlays */
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 1100; /* above everything, the welcome modal included */
+  padding: 1rem;
+  background: rgba(11, 17, 45, 0.92);
+}
+
+.logout-card {
+  width: 100%;
+  max-width: 340px;
+  padding: 1.5rem;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 0;
+  box-shadow: 8px 8px 0 0 #000; /* flat and heavy, no blur */
+}
+
+.logout-title {
+  margin: 0 0 1rem;
+  color: #0b112d;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Chunky block loader: the fill jumps in six hard steps, no easing */
+.logout-bar {
+  height: 24px;
+  padding: 3px;
+  border: 3px solid #000;
+  background: #fff;
+}
+
+.logout-bar-fill {
+  height: 100%;
+  background: #0b112d;
+  transform-origin: left;
+  animation: logout-fill 1.2s steps(6, jump-none) infinite;
+}
+
+@keyframes logout-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 /* ---------- Header navigation (All rides / My rides) ---------- */
@@ -414,23 +652,33 @@ h2 {
 
 /* ---------- Mobile navigation (hamburger) ---------- */
 
-/* Hidden on desktop; the media query below turns them on */
+/* Hidden on desktop; the media query below turns it on.
+   A hard framed square: thick border, flat shadow, heavy SVG bars. */
 .hamburger {
   display: none;
-  min-width: 44px; /* comfortable touch target */
-  min-height: 44px;
-  font-size: 1.4rem;
-  line-height: 1;
-  color: #3e4c59;
-  background: none;
-  border: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px; /* hard square, still a comfortable touch target */
+  height: 44px;
+  color: #0b112d;
+  background: #fff;
+  border: 3px solid #000;
   border-radius: 0;
-  padding: 0.35rem 0.6rem;
+  box-shadow: 4px 4px 0 0 #000; /* flat and heavy, no blur */
+  padding: 0;
   cursor: pointer;
 }
 
-.hamburger:hover {
-  background: #e4e7eb;
+/* Pressing drives the block fully into its shadow — mechanical, no fade */
+.hamburger:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+/* While the menu is open, the frame inverts: solid ink, white X */
+.hamburger.open {
+  background: #0b112d;
+  color: #fff;
 }
 
 .mobile-menu {
@@ -443,16 +691,39 @@ h2 {
   }
 
   .hamburger {
-    display: block; /* ...and the hamburger takes over */
+    display: flex; /* ...and the hamburger takes over (flex centers the icon) */
   }
 
+  /* The menu is an overlay, not part of the page flow: opening it must
+     never push the feed down. It hangs from the header's bottom edge
+     (+4px clears the black border, so the line stays visible above it)
+     and slides out from BEHIND the header like a roller door — z-index -1
+     keeps it under the header bar itself but, because it lives inside the
+     header's stacking context (z-index 20), still above the whole feed. */
   .mobile-menu {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    margin-top: 0.75rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #e4e7eb;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: -1;
+    padding: 0.5rem 1.5rem 0.75rem;
+    background: #fff;
+    border-bottom: 4px solid #0b112d; /* the hard line moves to the menu's foot */
+    transform: translateY(-100%);
+    /* Closed = truly gone: visibility waits for the slide-up to finish,
+       then also takes the buttons out of the tab order. */
+    visibility: hidden;
+    transition: transform 0.15s linear, visibility 0s linear 0.15s;
+  }
+
+  /* Open: a rigid 150ms linear slide — no easing curve, no fade */
+  .mobile-menu.open {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform 0.15s linear;
   }
 
   .mobile-link {
@@ -501,7 +772,15 @@ h2 {
     justify-content: space-between;
     margin-top: 0.5rem;
     padding: 0.75rem 0.75rem 0.25rem;
-    border-top: 1px solid #f0f2f5;
+    border-top: 2px solid #0b112d; /* hard line, not a gray hairline */
+  }
+}
+
+/* The slide is decoration; skip it for riders who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu,
+  .mobile-menu.open {
+    transition: none;
   }
 }
 
@@ -587,7 +866,7 @@ h2 {
   background: #0b112d;
   color: #fff;
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -631,7 +910,7 @@ h2 {
   border-radius: 0;
   font-family: inherit;
   font-size: 0.9rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
@@ -647,6 +926,23 @@ h2 {
   gap: 1rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
+}
+
+/* Label chip: a small rigid block above each input. Soft cream fill so
+   long sessions stay easy on the eyes; the hard border and flat offset
+   shadow keep it unmistakably brutalist. */
+.field-label {
+  align-self: flex-start; /* hug the text, don't stretch across the field */
+  padding: 0.15rem 0.5rem;
+  background: #f2ead8; /* parchment — one step deeper than the old cream */
+  color: #0b112d;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px; /* small caps need air, not compression */
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000; /* flat, no blur */
 }
 
 .field {
@@ -735,8 +1031,11 @@ h2 {
 
 .ride-card {
   background: #fff;
+  /* Medium border (3px, not the heavy 4px of the header) + flat offset
+     shadow: the card pops off the page mechanically, no blur anywhere. */
+  border: 3px solid #000;
   border-radius: 0;
-  box-shadow: 0 2px 8px rgba(31, 41, 51, 0.06);
+  box-shadow: 4px 4px 0 0 #000;
   padding: 1.25rem 1.5rem;
 }
 
@@ -837,10 +1136,17 @@ h2 {
 }
 
 .route-label {
-  font-weight: 800;
-  font-size: 0.75rem;
+  align-self: flex-start;
+  padding: 0.1rem 0.45rem;
+  background: #f2ead8; /* parchment — one step deeper than the old cream */
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: #0b112d;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
 }
 
 .route-text {
@@ -862,7 +1168,7 @@ h2 {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 0.9rem;
   letter-spacing: 1px;
 }
@@ -882,24 +1188,34 @@ h2 {
   align-items: center;
 }
 
+/* Badges: light pastel fills (easy on the eyes), uniform ink text for
+   contrast, and the hard frame + flat shadow doing the brutalist work. */
 .badge {
-  padding: 0.4rem 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border: 2px solid #000;
   border-radius: 0;
-  font-size: 0.85rem;
+  box-shadow: 2px 2px 0 0 #000;
+  color: #0b112d;
+  font-size: 0.75rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   white-space: nowrap;
 }
 
 /* ride types */
-.badge-road   { background: #e2e8f0; color: #334155; }
-.badge-mtb    { background: #ffedd5; color: #9a3412; }
-.badge-gravel { background: #fef3c7; color: #92400e; }
-.badge-city   { background: #f3e8ff; color: #6b21a8; }
+/* Vivid-pastel fills (one step deeper than before): the hue codes the
+   category with more presence, while text stays ink (set on .badge). */
+.badge-road   { background: #dbeafe; } /* blue   */
+.badge-mtb    { background: #ffedd5; } /* orange */
+.badge-gravel { background: #fef3c7; } /* amber  */
+.badge-city   { background: #f3e8ff; } /* lilac  */
 
-/* pace levels */
-.badge-beginner     { background: #dcfce7; color: #166534; }
-.badge-intermediate { background: #dbeafe; color: #1e40af; }
-.badge-advanced     { background: #1f2937; color: #f9fafb; }
+/* pace levels — intermediate/advanced sit a touch deeper so the pair
+   next to a type badge stays clearly distinguishable */
+.badge-beginner     { background: #d1fae5; } /* mint */
+.badge-intermediate { background: #bae6fd; } /* sky  */
+.badge-advanced     { background: #fecdd3; } /* rose */
 
 /* ---------- Progressive disclosure toggle ---------- */
 
@@ -956,10 +1272,12 @@ h2 {
 }
 
 .participant-tag {
-  border: 1px solid #0b112d;
+  background: #f2ead8; /* parchment — one step deeper than the old cream */
+  border: 2px solid #000;
   border-radius: 0;
+  box-shadow: 2px 2px 0 0 #000;
   padding: 0.25rem 0.5rem; /* 4px 8px */
-  font-size: 0.85rem;
+  font-size: 0.85rem; /* names stay mixed-case and regular — they're data */
   color: #0b112d;
 }
 
